@@ -1,4 +1,3 @@
-
 use diesel::prelude::*;
 
 #[derive(Queryable)]

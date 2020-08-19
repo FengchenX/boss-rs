@@ -6,6 +6,7 @@ use excel::*;
 
 use calamine::{Reader, Xlsx, open_workbook};
 
+mod db;
 
 fn main() {
     println!("Rust gRPC client demo.");
