@@ -1,10 +1,10 @@
 
+use boss::prelude::*;
 use crate::{
     config::db::Connection,
-    schema::people::{self, dsl::*}
-
 };
 use diesel::prelude::*;
+use schema::people::{self, dsl::*};
 
 #[derive(Queryable, Serialize, Deserialize)]
 pub struct Person {

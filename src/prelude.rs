@@ -12,4 +12,5 @@ pub use crate::{};
 pub use diesel::prelude::*;
 pub use dotenv::dotenv;
 pub use std::env;
+pub use super::schema;
 
