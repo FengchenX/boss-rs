@@ -1,12 +1,16 @@
 
+#[macro_use]
+extern crate diesel;
+extern crate dotenv;
 
 #[macro_use]
 extern crate simple_excel_writer as excel;
 use excel::*;
 
 use calamine::{Reader, Xlsx, open_workbook};
+use boss::db::{BossDB, ExpressionMethods};
+use boss::schema::posts::*;
 
-mod db;
 
 fn main() {
     println!("Rust gRPC client demo.");
