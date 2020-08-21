@@ -1,9 +1,17 @@
 use diesel::{pg::PgConnection, r2d2::{self, ConnectionManager}, MysqlConnection};
 
+use boss::db::*;
+
 embed_migrations!();
 
 pub type Connection = PgConnection;
 pub type Pool = r2d2::Pool<ConnectionManager<Connection>>;
+
+pub struct MyDB;
+
+impl DB<Connection> for MyDB {
+
+}
 
 pub fn migrate_and_config_db(url: &str) -> Pool {
     info!("Migrating and configurating database...");
