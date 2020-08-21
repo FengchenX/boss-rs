@@ -8,9 +8,10 @@ use crate::{
     services::account_service,
 };
 use actix_web::{web, HttpRequest, HttpResponse, Result};
+use crate::config::db::MysqlPool;
 
 // POST api/auth/signup
-pub async fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>) -> Result<HttpResponse> {
+pub async fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>, mspool: web::Data<MysqlPool>) -> Result<HttpResponse> {
     match account_service::signup(user_dto.0, &pool) {
         Ok(message) => Ok(HttpResponse::Ok().json(ResponseBody::new(&message, constants::EMPTY))),
         Err(err) => Ok(err.response()),

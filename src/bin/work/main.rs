@@ -43,6 +43,13 @@ use std::{io, env};
 use std::default::Default;
 use actix_cors::Cors;
 
+use std::cell::Cell;
+
+#[derive(Debug, Clone)]
+struct MyData {
+    counter: Cell<usize>,
+}
+
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
     dotenv::dotenv().expect("Failed to read .env file");
@@ -53,8 +60,12 @@ async fn main() -> io::Result<()> {
     let app_port = env::var("APP_PORT").expect("APP_PORT not found.");
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
+    let db_url2 = env::var("MS_DATABASE_URL").expect("MS_DATABASE_URL not found.");
 
     let pool = config::db::migrate_and_config_db(&db_url);
+    // let mspool = config::db::migrate_and_config_msdb(&db_url2);
+
+    let my = MyData{counter: Cell::new(10)};
 
     HttpServer::new(move || {
         App::new()
@@ -67,6 +78,8 @@ async fn main() -> io::Result<()> {
                 .max_age(3600)
                 .finish())
             .data(pool.clone())
+            // .data(mspool.clone())
+            .data(my.clone())
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
             .wrap_fn(|req, srv| {
