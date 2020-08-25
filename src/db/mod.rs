@@ -38,21 +38,36 @@
 //     }
 // }
 
-// use diesel::{r2d2::{self, ConnectionManager}};
-// embed_migrations!();
-//
-// pub trait DB {
-//     fn migrate_and_config_db<'a, A>(url: &str) -> r2d2::Pool<ConnectionManager<A>>
-//     where A: diesel::Connection
-//     {
-//         info!("Migrating and configurating database...");
-//         let manager = ConnectionManager::<A>::new(url);
-//         let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
-//         embedded_migrations::run(&pool.get().expect("Failed to migrate."));
-//
-//         pool
-//     }
-// }
+use diesel::{r2d2::{self, ConnectionManager}};
+use diesel::{PgConnection, MysqlConnection};
+
+embed_migrations!();
+
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
+
+pub trait PgDB{
+    fn migrate_and_config_db(&self, url: &str) -> Pool{
+        info!("Migrating and configurating database...");
+        let manager = ConnectionManager::<PgConnection>::new(url);
+        let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
+        embedded_migrations::run(&pool.get().expect("Failed to migrate."));
+
+        pool
+    }
+}
+
+
+pub type MysqlPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
+pub trait MysqlDB{
+    fn migrate_and_config_db(&self, url: &str) -> MysqlPool{
+        info!("Migrating and configurating database...");
+        let manager = ConnectionManager::<MysqlConnection>::new(url);
+        let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
+        embedded_migrations::run(&pool.get().expect("Failed to migrate."));
+
+        pool
+    }
+}
 
 
 

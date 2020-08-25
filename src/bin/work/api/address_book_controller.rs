@@ -1,5 +1,5 @@
 use crate::{
-    config::db::Pool,
+    config::db::*,
     constants,
     models::{
         person::PersonDTO,

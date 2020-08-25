@@ -44,6 +44,7 @@ use std::default::Default;
 use actix_cors::Cors;
 
 use std::cell::Cell;
+use boss::db::*;
 
 #[derive(Debug, Clone)]
 struct MyData {
@@ -62,7 +63,9 @@ async fn main() -> io::Result<()> {
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
     let db_url2 = env::var("MS_DATABASE_URL").expect("MS_DATABASE_URL not found.");
 
-    let pool = config::db::migrate_and_config_db(&db_url);
+    let boss = config::db::BossDB::new();
+    let pool = boss.migrate_and_config_db(&db_url);
+    // let pool = config::db::migrate_and_config_db(&db_url);
     // let mspool = config::db::migrate_and_config_msdb(&db_url2);
 
     let my = MyData{counter: Cell::new(10)};
