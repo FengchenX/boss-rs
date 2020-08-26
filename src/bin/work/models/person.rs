@@ -1,7 +1,7 @@
 
 use boss::prelude::*;
 use crate::{
-    config::db::Connection,
+    config::db::{PgConnection,MysqlConnection},
 };
 use diesel::prelude::*;
 use schema::people::{self, dsl::*};
@@ -29,15 +29,15 @@ pub struct PersonDTO {
 }
 
 impl Person {
-    pub fn find_all(conn: &Connection) -> QueryResult<Vec<Person>> {
+    pub fn find_all(conn: &PgConnection) -> QueryResult<Vec<Person>> {
         people.order(id.asc()).load::<Person>(conn)
     }
 
-    pub fn find_by_id(i: i32, conn: &Connection) -> QueryResult<Person> {
+    pub fn find_by_id(i: i32, conn: &PgConnection) -> QueryResult<Person> {
         people.find(i).get_result::<Person>(conn)
     }
 
-    pub fn query(query: String, conn: &Connection) -> QueryResult<Vec<Person>> {
+    pub fn query(query: String, conn: &PgConnection) -> QueryResult<Vec<Person>> {
         let pattern = format!("%{}%", query);
         let mut id_and_age_query: i32 = 0;
         let mut id_and_age_query_flag = false;
@@ -96,19 +96,19 @@ impl Person {
         }
     }
 
-    pub fn insert(new_person: PersonDTO, conn: &Connection) -> QueryResult<usize> {
+    pub fn insert(new_person: PersonDTO, conn: &PgConnection) -> QueryResult<usize> {
         diesel::insert_into(people)
             .values(&new_person)
             .execute(conn)
     }
 
-    pub fn update(i: i32, updated_person: PersonDTO, conn: &Connection) -> QueryResult<usize> {
+    pub fn update(i: i32, updated_person: PersonDTO, conn: &PgConnection) -> QueryResult<usize> {
         diesel::update(people.find(i))
             .set(&updated_person)
             .execute(conn)
     }
 
-    pub fn delete(i: i32, conn: &Connection) -> QueryResult<usize> {
+    pub fn delete(i: i32, conn: &PgConnection) -> QueryResult<usize> {
         diesel::delete(people.find(i)).execute(conn)
     }
 }

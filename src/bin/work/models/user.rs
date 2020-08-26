@@ -1,5 +1,5 @@
 use crate::{
-    config::db::Connection,
+    config::db::{PgConnection,MysqlConnection},
     constants,
     models::{login_history::LoginHistory, user_token::UserToken},
     schema::users::{self, dsl::*},
@@ -39,7 +39,7 @@ pub struct LoginInfoDTO {
 }
 
 impl User {
-    pub fn signup(user: UserDTO, conn: &Connection) -> Result<String, String> {
+    pub fn signup(user: UserDTO, conn: &PgConnection) -> Result<String, String> {
         if Self::find_user_by_username(&user.username, conn).is_err() {
             let hashed_pwd = hash(&user.password, DEFAULT_COST).unwrap();
             let user = UserDTO {
@@ -53,7 +53,7 @@ impl User {
         }
     }
 
-    pub fn login(login: LoginDTO, conn: &Connection) -> Option<LoginInfoDTO> {
+    pub fn login(login: LoginDTO, conn: &PgConnection) -> Option<LoginInfoDTO> {
         if let Ok(user_to_verify) = users
             .filter(username.eq(&login.username_or_email))
             .or_filter(email.eq(&login.username_or_email))
@@ -84,13 +84,13 @@ impl User {
         None
     }
 
-    pub fn logout(user_id: i32, conn: &Connection) {
+    pub fn logout(user_id: i32, conn: &PgConnection) {
         if let Ok(user) = users.find(user_id).get_result::<User>(conn) {
             Self::update_login_session_to_db(&user.username, "", conn);
         }
     }
 
-    pub fn is_valid_login_session(user_token: &UserToken, conn: &Connection) -> bool {
+    pub fn is_valid_login_session(user_token: &UserToken, conn: &PgConnection) -> bool {
         users
             .filter(username.eq(&user_token.user))
             .filter(login_session.eq(&user_token.login_session))
@@ -98,7 +98,7 @@ impl User {
             .is_ok()
     }
 
-    pub fn find_user_by_username(un: &str, conn: &Connection) -> QueryResult<User> {
+    pub fn find_user_by_username(un: &str, conn: &PgConnection) -> QueryResult<User> {
         users.filter(username.eq(un)).get_result::<User>(conn)
     }
 
@@ -109,7 +109,7 @@ impl User {
     pub fn update_login_session_to_db(
         un: &str,
         login_session_str: &str,
-        conn: &Connection,
+        conn: &PgConnection,
     ) -> bool {
         if let Ok(user) = User::find_user_by_username(un, conn) {
             diesel::update(users.find(user.id))

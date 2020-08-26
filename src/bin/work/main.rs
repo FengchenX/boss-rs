@@ -31,15 +31,15 @@ mod constants;
 mod error;
 mod middleware;
 mod models;
-// mod schema;
 use boss::schema;
 mod services;
 mod utils;
+mod grpc;
 
 use actix_web::{http, HttpServer, App};
 use actix_service::Service;
 use futures::FutureExt;
-use std::{io, env};
+use std::{io, env, thread};
 use std::default::Default;
 use actix_cors::Cors;
 
@@ -61,14 +61,19 @@ async fn main() -> io::Result<()> {
     let app_port = env::var("APP_PORT").expect("APP_PORT not found.");
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
-    let db_url2 = env::var("MS_DATABASE_URL").expect("MS_DATABASE_URL not found.");
 
     let boss = config::db::BossDB::new();
     let pool = boss.migrate_and_config_db(&db_url);
-    // let pool = config::db::migrate_and_config_db(&db_url);
-    // let mspool = config::db::migrate_and_config_msdb(&db_url2);
 
     let my = MyData{counter: Cell::new(10)};
+
+
+    thread::spawn(move || {
+        println!("this is thread grpc");
+        let svr = grpc::Svr::new();
+        svr.register();
+    });
+
 
     HttpServer::new(move || {
         App::new()
