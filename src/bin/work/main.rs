@@ -76,6 +76,7 @@ async fn main() -> io::Result<()> {
 
 
     HttpServer::new(move || {
+        println!("this is thread web");
         App::new()
             .wrap(Cors::new() // allowed_origin return access-control-allow-origin: * by default
                 // .allowed_origin("http://127.0.0.1:8080")
