@@ -54,6 +54,7 @@ struct MyData {
     counter: Cell<usize>,
 }
 
+// #[tokio::main]
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
     dotenv::dotenv().expect("Failed to read .env file");
@@ -71,9 +72,9 @@ async fn main() -> io::Result<()> {
     let my = MyData{counter: Cell::new(10)};
 
 
-    tokio::spawn(async{
+    tokio::spawn(async move{
         let svr = grpc::Svr::new();
-        svr.register();
+        svr.register().await;
     });
 
     HttpServer::new(move || {
