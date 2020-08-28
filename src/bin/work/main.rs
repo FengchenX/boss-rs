@@ -54,7 +54,6 @@ struct MyData {
     counter: Cell<usize>,
 }
 
-// #[tokio::main]
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
     dotenv::dotenv().expect("Failed to read .env file");
