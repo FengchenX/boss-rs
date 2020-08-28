@@ -25,6 +25,9 @@ extern crate jsonwebtoken;
 extern crate uuid;
 extern crate bcrypt;
 
+extern crate tokio;
+use tokio::prelude::*;
+
 mod api;
 mod config;
 mod constants;
@@ -68,12 +71,10 @@ async fn main() -> io::Result<()> {
     let my = MyData{counter: Cell::new(10)};
 
 
-    thread::spawn(move || {
-        println!("this is thread grpc");
+    tokio::spawn(async{
         let svr = grpc::Svr::new();
         svr.register();
     });
-
 
     HttpServer::new(move || {
         println!("this is thread web");
