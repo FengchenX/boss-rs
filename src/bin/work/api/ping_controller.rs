@@ -3,8 +3,7 @@ use actix_web::{web};
 use crate::MyData;
 
 #[get("/ping")]
-pub fn ping(m: web::Data<MyData>) -> HttpResponse {
-    println!("{}",m.counter.get());
+pub fn ping() -> HttpResponse {
     HttpResponse::Ok()
         .body("pong!".to_string())
 }

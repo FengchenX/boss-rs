@@ -48,6 +48,7 @@ use actix_cors::Cors;
 
 use std::cell::Cell;
 use boss::db::*;
+use crate::config::db::migrate_and_config_db;
 
 #[derive(Debug, Clone)]
 struct MyData {
@@ -70,7 +71,6 @@ async fn main() -> io::Result<()> {
 
     let my = MyData{counter: Cell::new(10)};
 
-
     tokio::spawn(async move{
         let svr = grpc::Svr::new();
         svr.register().await;
@@ -88,8 +88,6 @@ async fn main() -> io::Result<()> {
                 .max_age(3600)
                 .finish())
             .data(pool.clone())
-            // .data(mspool.clone())
-            .data(my.clone())
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
             .wrap_fn(|req, srv| {

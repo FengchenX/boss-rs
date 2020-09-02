@@ -1,6 +1,7 @@
 
-use diesel::{r2d2::{self, ConnectionManager}};
-pub use diesel::{PgConnection, MysqlConnection};
+pub use diesel::{r2d2::{self, ConnectionManager}};
+pub use diesel::pg::PgConnection;
+pub use diesel::mysql::MysqlConnection;
 
 embed_migrations!();
 
