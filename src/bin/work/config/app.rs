@@ -39,5 +39,12 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                             .route(web::get().to(address_book_controller::query))
                     )
             )
+            .service(
+                web::scope("/jobs")
+                    .service(
+                        web::resource("")
+                            .route(web::get().to(job::get_jobs))
+                    )
+            )
     );
 }
