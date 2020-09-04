@@ -39,7 +39,7 @@ mod test{
     use super::*;
 
     #[test]
-    fn test_boss_db(){
+    fn test_migrate_and_config_db(){
     }
 }
 

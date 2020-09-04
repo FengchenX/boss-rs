@@ -48,7 +48,6 @@ use actix_cors::Cors;
 
 use std::cell::Cell;
 use boss::db::*;
-use crate::config::db::migrate_and_config_db;
 
 #[derive(Debug, Clone)]
 struct MyData {

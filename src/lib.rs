@@ -36,3 +36,4 @@ pub mod prelude;
 pub mod db;
 pub mod schema;
 pub mod grpc;
+pub mod config;
