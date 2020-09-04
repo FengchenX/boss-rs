@@ -42,7 +42,6 @@ impl JobI for MyJob {
                     list: vec![]
                 };
                 for elem in js{
-
                     let Job{ id, creator, create_at, update_at, delete_at, progress, status, file }=elem;
                     let j=job::JobM{ id, creator: creator.unwrap(), create_at: create_at.unwrap(), update_at: update_at.unwrap(), delete_at: delete_at.unwrap(), progress: progress.unwrap(), status: status.unwrap(), file: file.unwrap() };
                     reply.list.push(j);
