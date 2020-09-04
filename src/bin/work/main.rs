@@ -71,7 +71,7 @@ async fn main() -> io::Result<()> {
     let my = MyData{counter: Cell::new(10)};
 
     tokio::spawn(async move{
-        let svr = grpc::Svr::new();
+        let svr = grpc::Svr::new(pool.clone());
         svr.register().await;
     });
 

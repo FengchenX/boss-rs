@@ -3,14 +3,17 @@ mod greeter;
 use boss::grpc::*;
 use greeter::*;
 use tonic::{transport::Server};
+use boss::db::*;
 
 
-pub struct Svr;
+pub struct Svr{
+    pool: Pool,
+}
 
 
 impl Svr {
-    pub fn new()->Self{
-        Svr
+    pub fn new(pool: Pool)->Self{
+        Svr{pool}
     }
     pub async fn register(&self)-> Result<(), Box<dyn std::error::Error>>{
         let addr = "[::1]:50051".parse()?;
