@@ -1,7 +1,10 @@
 
 mod greeter;
+mod job;
+
 use boss::grpc::*;
 use greeter::*;
+use job::*;
 use tonic::{transport::Server};
 use boss::db::*;
 
@@ -18,8 +21,12 @@ impl Svr {
     pub async fn register(&self)-> Result<(), Box<dyn std::error::Error>>{
         let addr = "[::1]:50051".parse()?;
         let greeter = MyGreeter::default();
+        let mut job = MyJob{
+            pool:self.pool.clone()
+        };
         Server::builder()
             .add_service(GreeterServer::new(greeter))
+            .add_service(JobServer::new(job))
             .serve(addr)
             .await?;
 

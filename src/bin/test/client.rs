@@ -6,6 +6,13 @@ pub mod hello_world {
     tonic::include_proto!("helloworld");
 }
 
+use job::job_client::JobClient;
+use job::JobRequest;
+
+pub mod job {
+    tonic::include_proto!("job");
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut client = GreeterClient::connect("http://[::1]:50051").await?;
@@ -18,11 +25,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("RESPONSE={:?}", response);
 
-    // let req2 = tonic::Request::new(HelloRequest {
-    //     name: "Tonic2222".into(),
-    // });
-    // let res2 = client.hello(req2).await?;
-    // println!("RESPONSE={:?}", res2);
+    let mut jobclient = JobClient::connect("http://[::1]:50051").await?;
 
+    let jobrequest = tonic::Request::new(JobRequest {
+       status: String::from("error"),
+    });
+
+    let jobresponse = jobclient.get_jobs(jobrequest).await?;
+
+    println!("RESPONSE={:?}", jobresponse);
     Ok(())
 }
